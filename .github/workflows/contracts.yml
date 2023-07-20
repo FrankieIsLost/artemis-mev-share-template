@@ -1,0 +1,50 @@
+name: Solidity
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Foundry
+        uses: onbjerg/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Install deps
+        working-directory: contracts
+        run: forge install
+
+      - name: Run forge tests
+        working-directory: contracts
+        run: forge test
+
+  bindings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Foundry
+        uses: onbjerg/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Pull library deps
+        working-directory: contracts
+        run: forge install
+
+      - name: Check fmt
+        working-directory: contracts
+        run: forge fmt --check
+
+      - name: Build contracts before checking bindings are correct
+        working-directory: contracts
+        run: forge build --sizes
+
+      - name: Check bindings are correct
+        run: forge bind --bindings-path ./bindings --root ./contracts --crate-name bindings
