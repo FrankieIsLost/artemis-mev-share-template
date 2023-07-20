@@ -1,4 +1,4 @@
-# Artemis MEV-Share monorepo
+# Artemis MEV-Share template
 
 **Template for quickly getting started with developing Mev Share Strategies in Artemis**
 
