@@ -1,15 +1,6 @@
-# Foundry Rust Monorepo Template
+# Artemis MEV-Share monorepo
 
-![Rust](https://github.com/gakonst/foundry-rust-template/workflows/Rust/badge.svg)
-![Solidity](https://github.com/gakonst/foundry-rust-template/workflows/Solidity/badge.svg)
-[![Telegram Chat][tg-badge]][tg-url]
-
-[tg-badge]:
-  https://img.shields.io/endpoint?color=neon&style=flat-square&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Ffoundry_rs
-[tg-url]: https://t.me/foundry_rs
-
-**Template for quickly getting started with developing Rust applications that
-leverage Foundry for EVM smart contract development.**
+**Template for quickly getting started with developing Mev Share Strategies in Artemis**
 
 Continuous Integration is already set up to test both your Rust and Solidity
 code, as well as ensure formatting and that your Rust bindings match the
@@ -23,7 +14,7 @@ The project is structured as a mixed Rust workspace with a Foundry project under
 
 ```
 ├── Cargo.toml
-├── app // <-- Your Rust application logic
+├── bot // <-- Your bot logic
 ├── contracts // <- The smart contracts + tests using Foundry
 ├── bindings // <-- Generated bindings to the smart contracts' abis (like Typechain)
 ```
@@ -65,7 +56,6 @@ Rust bindings to the contracts can be generated via `forge bind`, which requires
 first building your contracts:
 
 ```
-forge build --root ./contracts
 forge bind --bindings-path ./bindings --root ./contracts --crate-name bindings
 ```
 
