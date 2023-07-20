@@ -1,9 +1,9 @@
-use std::{sync::Arc};
+use std::sync::Arc;
 
 use artemis_core::{
     collectors::mevshare_collector::MevShareCollector,
     engine::Engine,
-    executors::mev_share_executor::{MevshareExecutor},
+    executors::mev_share_executor::MevshareExecutor,
     types::{CollectorMap, ExecutorMap},
 };
 use ethers::{
