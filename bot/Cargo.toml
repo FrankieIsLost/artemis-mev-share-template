@@ -12,9 +12,10 @@ eyre = "0.6"
 tokio = { version = "1.19", features = ["full"] }
 async-trait = "0.1.64"
 anyhow = "1.0.70"
-artemis-core = { git = "https://github.com/paradigmxyz/artemis"}
-matchmaker = { git = "https://github.com/paradigmxyz/artemis"}
+artemis-core = { git = "https://github.com/paradigmxyz/artemis" }
 tracing = "0.1.37"
-tracing-subscriber = { version = "0.3", default-features = false, features = ["env-filter", "fmt"] }
-mev-share = "0.1.1"
-
+tracing-subscriber = { version = "0.3", default-features = false, features = [
+    "env-filter",
+    "fmt",
+] }
+mev-share = "0.1.4"

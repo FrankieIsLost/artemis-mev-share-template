@@ -1,7 +1,7 @@
 use std::{ops::Add, sync::Arc, vec};
 
 use anyhow::Result;
-use artemis_core::{executors::mev_share_executor::Bundles, types::Strategy};
+use artemis_core::types::Strategy;
 use async_trait::async_trait;
 use bindings::counter::Counter;
 use ethers::{
@@ -9,8 +9,10 @@ use ethers::{
     signers::Signer,
     types::{Address, H256},
 };
-use matchmaker::types::{BundleRequest, BundleTx};
-use mev_share::sse;
+use mev_share::{
+    rpc::{BundleItem, Inclusion, SendBundleRequest},
+    sse,
+};
 use tracing::info;
 
 /// Event which is the input to the current strategy.
@@ -22,7 +24,7 @@ pub enum Event {
 /// Action which is the output of the current strategy.
 #[derive(Debug, Clone)]
 pub enum Action {
-    SubmitBundles(Bundles),
+    SubmitBundles(Vec<SendBundleRequest>),
 }
 
 #[derive(Debug, Clone)]
@@ -68,15 +70,22 @@ impl<M: Middleware + 'static, S: Signer + 'static> Strategy<Event, Action>
 // Example of how to construct a bundle.
 impl<M: Middleware + 'static, S: Signer + 'static> SimpleBackrunner<M, S> {
     /// We backrun the transaction with a counter increment.
-    pub async fn generate_bundles(&self, tx_hash: H256) -> Vec<BundleRequest> {
+    pub async fn generate_bundles(&self, tx_hash: H256) -> Vec<SendBundleRequest> {
         // generate and sign our tx
         let tx = self.contract.increment().tx;
         let signature = self.tx_signer.sign_transaction(&tx).await.unwrap();
         let bytes = tx.rlp_signed(&signature);
-        let txs =
-            vec![BundleTx::TxHash { hash: tx_hash }, BundleTx::Tx { tx: bytes, can_revert: false }];
+        let txs = vec![
+            BundleItem::Hash { hash: tx_hash },
+            BundleItem::Tx { tx: bytes, can_revert: false },
+        ];
         let block_num = self.client.get_block_number().await.unwrap();
-        let bundle = BundleRequest::make_simple(block_num.add(1), txs);
+        let bundle = SendBundleRequest {
+            bundle_body: txs,
+
+            inclusion: Inclusion { block: block_num.add(1), max_block: Some(block_num.add(30)) },
+            ..Default::default()
+        };
         info!("generating bundle: {:?}", bundle);
         // add bundle here if you want to submit it to the matchmaker
         vec![]
