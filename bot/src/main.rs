@@ -10,7 +10,7 @@ use ethers::{
     prelude::{rand, MiddlewareBuilder},
     providers::{Provider, Ws},
     signers::{LocalWallet, Signer},
-    types::{Address, Chain},
+    types::Address,
 };
 
 use simple_backrun::{Action, Event, SimpleBackrunner};
@@ -55,7 +55,7 @@ async fn main() -> Result<()> {
     // this should be the key you want to use to sign flashbots bundle
     let fb_signer = ethers::signers::LocalWallet::new(&mut rand::thread_rng());
 
-    let mev_share_executor = Box::new(MevshareExecutor::new(fb_signer, Chain::Mainnet));
+    let mev_share_executor = Box::new(MevshareExecutor::new(fb_signer));
     let mev_share_executor = ExecutorMap::new(mev_share_executor, |action| match action {
         Action::SubmitBundles(bundles) => Some(bundles),
     });
