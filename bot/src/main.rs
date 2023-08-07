@@ -47,7 +47,7 @@ async fn main() -> Result<()> {
     let contract_address = Address::random();
 
     let provider = Arc::new(provider.nonce_manager(address).with_signer(wallet.clone()));
-    let strategy = SimpleBackrunner::new(Arc::new(provider.clone()), wallet, contract_address);
+    let strategy = SimpleBackrunner::new(Arc::new(provider), wallet, contract_address);
     engine.add_strategy(Box::new(strategy));
 
     // Set up executor.
