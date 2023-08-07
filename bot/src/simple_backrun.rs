@@ -24,7 +24,7 @@ pub enum Event {
 /// Action which is the output of the current strategy.
 #[derive(Debug, Clone)]
 pub enum Action {
-    SubmitBundles(Vec<SendBundleRequest>),
+    SubmitBundle(SendBundleRequest),
 }
 
 #[derive(Debug, Clone)]
@@ -56,12 +56,12 @@ impl<M: Middleware + 'static, S: Signer + 'static> Strategy<Event, Action>
 
     // This function is used to process mev share events. It should return a
     // vector of bundles to submit to the matchmaker.
-    async fn process_event(&mut self, event: Event) -> Option<Action> {
+    async fn process_event(&mut self, event: Event) -> Vec<Action> {
         match event {
             Event::MEVShareEvent(event) => {
                 info!("Received mev share event: {:?}", event);
                 let bundles = self.generate_bundles(event.hash).await;
-                return Some(Action::SubmitBundles(bundles));
+                return bundles.into_iter().map(Action::SubmitBundle).collect();
             }
         }
     }
